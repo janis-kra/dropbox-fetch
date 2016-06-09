@@ -1,0 +1,23 @@
+{
+  "name": "dropbox-fetch",
+  "version": "0.0.1",
+  "description": "Simple Javascript wrapper for the Dropbox HTTP API, using fetch.",
+  "main": "dropbox-fetch.js",
+  "scripts": {
+    "test": "tape test/*.js || exit 0;"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janis-kra/dropbox-fetch.git"
+  },
+  "keywords": [
+    "dropbox",
+    "fetch"
+  ],
+  "author": "Janis Krasemann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/janis-kra/dropbox-fetch/issues"
+  },
+  "homepage": "https://github.com/janis-kra/dropbox-fetch#readme"
+}
