@@ -51,27 +51,15 @@ test('authorize', (t) => {
 test('setToken', (t) => {
   t.plan(6);
 
-  try {
-    box.setToken('');
-    t.pass('token successfully set to the empty string');
-  } catch (e) {
-    t.fail('setting the token to the empty string should not fail - ' + e);
-  }
+  t.doesNotThrow(box.setToken.bind(this, ''),
+    'setting the token to the empty string should not fail');
 
-  try {
-    box.setToken('loremipsum1234!');
-    t.pass('token successfully set to an arbitrary string');
-  } catch (e) {
-    t.fail('setting the token to an arbitrary string should not fail - ' + e);
-  }
+  t.doesNotThrow(box.setToken.bind(this, 'loremipsum1234!'),
+    'setting the token to an arbitrary string should not fail');
 
   // 4 runs with invalid arguments
   [true, {}, [], 1].forEach((token) => {
-    try {
-      box.setToken(token);
-      t.fail(`setting the token to invalid argument ${token} should fail`);
-    } catch (e) {
-      t.pass(`setting the token to invalid argument ${token} failed as expected`);
-    }
+    t.throws(box.setToken.bind(this, token),
+      `setting the token to invalid argument ${token} should fail`);
   });
 });
