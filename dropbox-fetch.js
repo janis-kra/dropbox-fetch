@@ -4,6 +4,14 @@
  */
 let token = '';
 
+const AUTHORIZE_ENDPOINT = 'https://www.dropbox.com/oauth2/authorize';
+
+const getAuthorizationUrl = (clientId) => {
+  return AUTHORIZE_ENDPOINT + '?' +
+    'response_type=token' +
+    'client_id=' + clientId;
+};
+
 /**
  * Authorize via OAuth 2.0 for Dropbox API calls.
  *
@@ -15,7 +23,8 @@ let token = '';
  */
 const authorize = (clientId, redirectUri = '') => {
   return new Promise((resolve, reject) => {
-    reject('not implemented yet');
+    reject('Not implemented yet, please obtain a token manually by calling ' +
+      getAuthorizationUrl(clientId));
   });
 };
 
