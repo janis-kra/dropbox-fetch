@@ -24,8 +24,10 @@ test('authorize', (t) => {
     t.pass('Authorization without a clientId failed correctly');
   });
 
-  t.equal(typeof config, 'object', 'config.js must exist and be a function (module) for the test to pass');
-  t.equal(typeof config.clientId, 'string', 'config.clientId must exist and be a string for the test to pass');
+  t.equal(typeof config, 'object', 'config.js must exist and be a function ' +
+    '(module) for the test to pass');
+  t.equal(typeof config.clientId, 'string', 'config.clientId must exist ' +
+    'and be a string for the test to pass');
 
   const clientId = config.clientId;
 
@@ -61,5 +63,49 @@ test('setToken', (t) => {
   [true, {}, [], 1].forEach((token) => {
     t.throws(box.setToken.bind(this, token),
       `setting the token to invalid argument ${token} should fail`);
+  });
+});
+
+test('upload', (t) => {
+  t.plan(7);
+
+  // prepare the test file
+  const buf = new Buffer('loremipsum1234', 'utf8');
+  const file = {
+    name: 'upload',
+    content: buf,
+    replace: true
+  };
+  const validPath = 'validTestPath';
+  const invalidPath = 'invalidTestPath';
+
+  box.upload(file, validPath).then((status) => {
+    t.equal(status, 200, 'uploading a valid file should return http status 200');
+  }).catch(() => {
+    t.fail('uploading a valid file should not fail ' +
+      '(make sure that path "validTestPath" is writable in your dropbox)');
+  });
+
+  box.upload(file, invalidPath).then((status) => {
+    t.fail('uploading a valid file to an invalid path should fail ' +
+      '(make sure that path "invalidTestPath" is not writable in your dropbox)');
+  }).catch(() => {
+    t.pass('uploading a valid file to an invalid path failed as expected');
+  });
+
+  // test with 5 invalid file objects:
+  const invalidFiles = [
+    true, // invalid type boolean
+    {}, // invalid empty object
+    { name: true, content: buf, replace: true }, // invalid name
+    { name: 'upload', content: true, replace: true }, // invalid content
+    { name: 'upload', content: buf, replace: 1 } // invalid replace
+  ];
+  invalidFiles.forEach((f) => {
+    box.upload(f, validPath).then((status) => {
+      t.fail('uploading an invalid file to a valid path should fail');
+    }).catch(() => {
+      t.pass('uploading a valid file to an invalid path failed as expected');
+    });
   });
 });
