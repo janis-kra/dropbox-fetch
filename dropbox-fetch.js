@@ -39,7 +39,25 @@ const setToken = (t) => {
   token = t;
 };
 
+/**
+ * Upload the given file to the dropbox.
+ * @param  {object} file an object describing the file, consisting of:
+ *  - {string} name
+ *  - {Buffer} content
+ *  - {boolean} replace
+ * @param  {string} destinationPath the path in the dropbox where the file should
+ * be uploaded to
+ * @return {function} a promise that resolves when the upload is complete or
+ * fails with an error message
+ */
+const upload = ({ name, content, replace }, destinationPath) => {
+  return new Promise((resolve, reject) => {
+    reject('Not implemented yet');
+  });
+};
+
 module.exports = {
   authorize,
-  setToken
+  setToken,
+  upload
 };
