@@ -1,6 +1,16 @@
 const test = require('tape');
 const box = require('../dropbox-fetch');
-const config = require('./config');
+const config = (() => {
+  // IIFE for catching Module-not-found error when config.js does not exist
+  let c;
+  try {
+    c = require('./config');
+  } catch (_) {
+     // set config = false s.t. the corresponding test fails instead of throwing an Error
+    c = false;
+  }
+  return c;
+})();
 
 test.onFinish(() => {
 });
@@ -14,7 +24,7 @@ test('authorize', (t) => {
     t.pass('Authorization without a clientId failed correctly');
   });
 
-  t.equal(typeof config, 'object', 'config.js must exist and be a function for the test to pass');
+  t.equal(typeof config, 'object', 'config.js must exist and be a function (module) for the test to pass');
   t.equal(typeof config.clientId, 'string', 'config.clientId must exist and be a string for the test to pass');
 
   const clientId = config.clientId;
