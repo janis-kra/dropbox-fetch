@@ -1,5 +1,6 @@
 const test = require('tape');
 const box = require('../dropbox-fetch');
+const fetch = require('node-fetch');
 const config = (() => {
   // IIFE for catching Module-not-found error when config.js does not exist
   let c;
@@ -53,59 +54,65 @@ test('authorize', (t) => {
 test('setToken', (t) => {
   t.plan(6);
 
-  t.doesNotThrow(box.setToken.bind(this, ''),
+  t.doesNotThrow(box.setToken.bind(this, ''), null,
     'setting the token to the empty string should not fail');
 
-  t.doesNotThrow(box.setToken.bind(this, 'loremipsum1234!'),
+  t.doesNotThrow(box.setToken.bind(this, 'loremipsum1234!'), null,
     'setting the token to an arbitrary string should not fail');
 
   // 4 runs with invalid arguments
   [true, {}, [], 1].forEach((token) => {
-    t.throws(box.setToken.bind(this, token),
+    t.throws(box.setToken.bind(this, token), null,
       `setting the token to invalid argument ${token} should fail`);
   });
 });
 
 test('upload', (t) => {
-  t.plan(7);
+  t.plan(8);
 
   // prepare the test file
-  const buf = new Buffer('loremipsum1234', 'utf8');
   const file = {
-    name: 'upload',
-    content: buf,
-    replace: true
+    name: 'upload.txt',
+    content: 'loremipsum1234',
+    mode: 'add'
   };
-  const validPath = 'validTestPath';
-  const invalidPath = 'invalidTestPath';
+  const validPath = '/tape-test';
+  const invalidPath = true;
+  const validToken = config.token;
+  const invalidToken = 1;
 
-  box.upload(file, validPath).then((status) => {
-    t.equal(status, 200, 'uploading a valid file should return http status 200');
+  box.upload(file, validPath, validToken).then((result) => {
+    t.equal(result.status, 200, 'uploading a valid file should return http status 200');
   }).catch(() => {
     t.fail('uploading a valid file should not fail ' +
-      '(make sure that path "validTestPath" is writable in your dropbox)');
+      '(make sure that path "validTestPath" is writable in your dropbox and "validToken" is correct)');
   });
 
-  box.upload(file, invalidPath).then((status) => {
-    t.fail('uploading a valid file to an invalid path should fail ' +
-      '(make sure that path "invalidTestPath" is not writable in your dropbox)');
-  }).catch(() => {
-    t.pass('uploading a valid file to an invalid path failed as expected');
-  });
+  t.throws(box.upload.bind(this, file, invalidPath, validToken),
+    'uploading a valid file to an invalid path should fail ');
 
   // test with 5 invalid file objects:
   const invalidFiles = [
     true, // invalid type boolean
     {}, // invalid empty object
-    { name: true, content: buf, replace: true }, // invalid name
-    { name: 'upload', content: true, replace: true }, // invalid content
-    { name: 'upload', content: buf, replace: 1 } // invalid replace
+    { name: true, content: 'loremipsum1234', mode: 'add' }, // invalid name
+    { name: 'upload', content: true, mode: 'add' }, // invalid content
+    { name: 'upload', content: 'loremipsum1234', mode: 1 } // invalid mode
   ];
   invalidFiles.forEach((f) => {
-    box.upload(f, validPath).then((status) => {
-      t.fail('uploading an invalid file to a valid path should fail');
-    }).catch(() => {
-      t.pass('uploading a valid file to an invalid path failed as expected');
-    });
+    t.throws(box.upload.bind(this, f, validPath, validToken), null, 'uploading an invalid file to a valid path should fail');
   });
+
+  t.throws(box.upload.bind(this, file, validPath, invalidToken), 'uploading with an invalid token type should fail');
+});
+
+test('fetch', (t) => {
+  t.plan(1);
+
+  fetch('http://httpbin.org/post', { method: 'POST', body: 'a=1' })
+    .then(function (res) {
+      return res.json();
+    }).then(function (json) {
+      t.pass(json);
+    });
 });
