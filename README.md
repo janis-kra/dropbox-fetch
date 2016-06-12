@@ -9,13 +9,13 @@ Coming soon.
 
 Features:
 
-- none yet
+- `upload`
 
 Upcoming:
 
 - `authorize`
-- `upload`
 - `download`
+- `listFiles`
 
 
 ## Contributing
