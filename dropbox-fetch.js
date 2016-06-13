@@ -35,6 +35,8 @@ const authorize = (clientId, redirectUri = '') => {
 
 /**
  * Set the token that is used for all Dropbox API calls to the given value.
+ * If you set this value, you can omit the `token` parameter in all the calls
+ * to this library.
  * @param  {string} t The new token value.
  */
 const setToken = (token) => {
@@ -42,6 +44,31 @@ const setToken = (token) => {
     throw new Error('invalid argument ' + token + ' (expected: string)');
   }
   _token = token;
+};
+
+/**
+ * Generic method for posting some content to a given endpoint using a certain
+ * method. If no wrapper function for the method you need exists, feel free to use this
+ * for your calls to the Dropbox API.
+ *
+ * See https://www.dropbox.com/developers/documentation/http/documentation for
+ * the documentation of the Dropbox HTTP API.
+ *
+ * @param  {string} method   the method to call
+ * @param  {object} apiArgs  an object that is passed as the Dropbox-API-Arg header
+ * @param  {string} content  the content to upload (e.g. the file content you
+ * whish to upload)
+ * @param  {string} endpoint the URL endpoint to use; defaults to
+ * https://content.dropboxapi.com as this is used for all file operations
+ * @param  {string?} token your Dropbox API token
+ * (defaults to the value set via setToken`)
+ * @return {function} a promise that, depending on if your call was successfull,
+ * either resolves or rejects with the answer from the Dropbox HTTP Api
+ */
+const post = (method, apiArgs, content, endpoint = CONTENT_UPLOAD_ENDPOINT, token = _token) => {
+  return new Promise((resolve, reject) => {
+    reject('Not implemented yet');
+  });
 };
 
 /**
@@ -92,7 +119,10 @@ const upload = ({ name, content, mode }, destinationPath, token = _token) => {
 };
 
 module.exports = {
+  AUTHORIZE_ENDPOINT,
+  CONTENT_UPLOAD_ENDPOINT,
   authorize,
   setToken,
+  post,
   upload
 };
