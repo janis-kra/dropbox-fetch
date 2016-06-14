@@ -5,7 +5,8 @@
   "main": "dropbox-fetch.js",
   "scripts": {
     "test": "tape test/*.js || exit 0;",
-    "test-debug": "iron-node test/dropbox-fetch.js",
+    "test:debug": "iron-node test/dropbox-fetch.js",
+    "lint": "eslint ./dropbox-fetch.js",
     "start": "node dropbox-fetch.js"
   },
   "repository": {
