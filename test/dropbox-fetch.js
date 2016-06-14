@@ -67,6 +67,54 @@ test('setToken', (t) => {
   });
 });
 
+test('post:fail', (t) => {
+  t.throws(box.post, null, 'calling post without any arguments should throw an Error');
+
+  const failPost = (method, apiArgs, content, endpoint, token) => {
+    box.post(method, apiArgs, content, endpoint, token).then(() => {
+      t.fail('calling post with an invalid but correctly typed argument should result in a rejected promise');
+    }).catch(() => {
+      t.pass('calling post with an invalid argument failed as expected');
+    });
+  };
+
+  const method = '/files/upload';
+  const apiArgs = {
+    path: 'file.txt',
+    mode: 'add',
+    autorename: true,
+    mute: false
+  };
+  const content = 'loremipsum1234';
+  const token = config.token;
+  const endpoint = box.CONTENT_UPLOAD_ENDPOINT;
+
+  failPost('unknownMethod', apiArgs, content, token, endpoint);
+  failPost(method, {}, content, token, endpoint);
+  // test for invalid content intentionally left out
+  failPost(method, apiArgs, content, 'invalidToken', endpoint);
+  failPost(method, apiArgs, content, token, 'unknownEndpoint');
+});
+
+test('post:upload', (t) => {
+  const method = '/files/upload';
+  const apiArgs = {
+    path: 'file.txt',
+    mode: 'add',
+    autorename: true,
+    mute: false
+  };
+  const content = 'loremipsum1234';
+  const token = config.token;
+  const endpoint = box.CONTENT_UPLOAD_ENDPOINT;
+
+  box.post(method, apiArgs, content, endpoint, token).then((result) => {
+    t.equal(result.status, 200, 'uploading a valid file via `post` should return http status 200');
+  }).catch(() => {
+    t.fail('uploading a valid file via `post` should not fail');
+  });
+});
+
 test('upload', (t) => {
   t.plan(8);
 
