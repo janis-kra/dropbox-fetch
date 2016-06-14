@@ -97,9 +97,9 @@ test('post:fail', (t) => {
 
 test('post:upload', (t) => {
   t.plan(1);
-  const method = '/files/upload';
+  const method = 'files/upload';
   const apiArgs = {
-    path: 'file.txt',
+    path: '/tape-test/upload.txt',
     mode: 'add',
     autorename: true,
     mute: false
@@ -116,42 +116,49 @@ test('post:upload', (t) => {
 });
 
 test('upload', (t) => {
-  t.plan(8);
+  t.plan(9);
 
-  // prepare the test file
-  const file = {
-    name: 'upload.txt',
-    content: 'loremipsum1234',
-    mode: 'add'
+  const path = '/tape-test/upload.txt';
+  const apiArgs = {
+    path: path,
+    mode: 'add',
+    autorename: true,
+    mute: false
   };
-  const validPath = '/tape-test';
-  const invalidPath = true;
+  const content = 'loremipsum1234!';
   const validToken = config.token;
   const invalidToken = 1;
 
-  box.upload(file, validPath, validToken).then((result) => {
+  box.upload(apiArgs, content, validToken).then((result) => {
     t.equal(result.status, 200, 'uploading a valid file should return http status 200');
   }).catch(() => {
     t.fail('uploading a valid file should not fail ' +
-      '(make sure that path "validTestPath" is writable in your dropbox and "validToken" is correct)');
+      '(make sure that the given path is writable in your dropbox and ' +
+      'that the token parameter is correct)');
   });
-
-  t.throws(box.upload.bind(this, file, invalidPath, validToken),
-    'uploading a valid file to an invalid path should fail ');
+  box.upload({ path }, content, validToken).then((result) => {
+    t.equal(result.status, 200, 'calling upload without the optional params ' +
+      'should return status 200');
+  }).catch(() => {
+    t.fail('calling upload without the optional params should not fail ');
+  });
 
   // test with 5 invalid file objects:
-  const invalidFiles = [
+  const invalidApiArgs = [
     true, // invalid type boolean
     {}, // invalid empty object
-    { name: true, content: 'loremipsum1234', mode: 'add' }, // invalid name
-    { name: 'upload', content: true, mode: 'add' }, // invalid content
-    { name: 'upload', content: 'loremipsum1234', mode: 1 } // invalid mode
+    { path: true, mode: 'add', autorename: true, mute: false }, // invalid path
+    { path: '/tape-test/upload.txt', mode: true, autorename: true, mute: false }, // invalid mode
+    { path: '/tape-test/upload.txt', mode: 'add', autorename: 1, mute: false }, // invalid autorename
+    { path: '/tape-test/upload.txt', mode: 'add', autorename: true, mute: 1 } // invalid mute
   ];
-  invalidFiles.forEach((f) => {
-    t.throws(box.upload.bind(this, f, validPath, validToken), null, 'uploading an invalid file to a valid path should fail');
+  invalidApiArgs.forEach((apiArgs) => {
+    t.throws(box.upload.bind(this, apiArgs, content, validToken), null,
+      'uploading an invalid file to a valid path should fail');
   });
 
-  t.throws(box.upload.bind(this, file, validPath, invalidToken), 'uploading with an invalid token type should fail');
+  t.throws(box.upload.bind(this, apiArgs, content, invalidToken),
+    'uploading with an invalid token type should fail');
 });
 
 test('fetch', (t) => {
@@ -161,6 +168,6 @@ test('fetch', (t) => {
     .then(function (res) {
       return res.json();
     }).then(function (json) {
-      t.pass(json);
+      t.ok(json, 'fetch post should return a json response');
     });
 });
