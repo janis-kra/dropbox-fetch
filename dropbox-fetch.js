@@ -60,7 +60,13 @@ const setToken = (token) => {
  * @return {function} a promise that, depending on if your call was successfull,
  * either resolves or rejects with the answer from the Dropbox HTTP Api
  */
-const post = (apiMethod, apiArgs, content, endpoint = CONTENT_UPLOAD_ENDPOINT, token = _token) => {
+const post = (
+  apiMethod,
+  apiArgs,
+  content,
+  endpoint = CONTENT_UPLOAD_ENDPOINT,
+  token = _token
+) => {
   assert.string(apiMethod, 'invalid argument ' + apiMethod + ' (expected: string)');
   assert.object(apiArgs, 'invalid argument ' + apiArgs + ' (expected: object)');
   assert.string(content, 'invalid argument ' + content + ' (expected: string)');
@@ -88,48 +94,34 @@ const post = (apiMethod, apiArgs, content, endpoint = CONTENT_UPLOAD_ENDPOINT, t
 /**
  * Upload the given file to the dropbox.
  * @param  {object} file an object describing the file, consisting of:
- *  - {string} name
- *  - {string} content
- *  - {string} mode
- * @param  {string} destinationPath the path in the dropbox where the file should
- * be uploaded to
+ *  - {string} path the path in the dropbox where the file should
+ * be uploaded to (with a leading slash)
+ *  - {string} mode what to do when the file already exists ('add', 'overwrite' or 'update')
+ *  - {boolean} autorename
+ *  - {boolean} mute
+ * @param  {string} content the content  that should be written to the file
+ * described in the apiArgs parameter
  * @param  {string?} token the OAuth 2 token that is used to access your app;
  * can be omitted (in this case, the token that is set via ``setToken` is used)
  * @return {function} a promise that resolves when the upload is complete or
  * fails with an error message
  */
-const upload = ({ name, content, mode }, destinationPath, token = _token) => {
-  if (typeof name !== 'string') {
-    throw new Error('invalid argument ' + name + ' (expected: string)');
-  }
-  if (typeof content !== 'string') {
-    throw new Error('invalid argument ' + content + ' (expected: string)');
-  }
-  if (typeof mode !== 'string') {
-    throw new Error('invalid argument ' + mode + ' (expected: string)');
-  }
-  if (typeof destinationPath !== 'string') {
-    throw new Error('invalid argument ' + destinationPath + ' (expected: string)');
-  }
-  if (typeof token !== 'string') {
-    throw new Error('invalid argument ' + token + ' (expected: string)');
-  }
+const upload = (
+  {
+    path,
+    mode = 'add',
+    autorename = true,
+    mute = false
+  },
+  content,
+  token = _token
+) => {
+  assert.string(path); // TODO: Check if this is a valid path with a leading forward slash / add the leading slash if it is missing
+  assert.string(mode);
+  assert.bool(autorename);
+  assert.bool(mute);
 
-  const path = destinationPath + '/' + name;
-  return fetch(CONTENT_UPLOAD_ENDPOINT + API_VERSION + '/files/upload', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/octet-stream',
-      'Authorization': 'Bearer ' + token,
-      'Dropbox-API-Arg': JSON.stringify({
-        'path': path,
-        'mode': mode,
-        'autorename': true,
-        'mute': false
-      })
-    },
-    body: content
-  });
+  return post('files/upload', { path, mode, autorename, mute }, content, CONTENT_UPLOAD_ENDPOINT, token);
 };
 
 module.exports = {
