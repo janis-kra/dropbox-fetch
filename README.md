@@ -5,7 +5,7 @@ Simple Javascript wrapper for the Dropbox HTTP API, using fetch. This is mainly 
 
 ### upload
 
-```
+``` js
 const box = require('dropbox-fetch');
 
 const apiArgs = {
