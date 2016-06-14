@@ -73,13 +73,6 @@ const post = (
   assert.string(endpoint, 'invalid argument ' + endpoint + ' (expected: string)');
   assert.string(token, 'invalid argument ' + token + ' (expected: string)');
 
-  /*
-   * TODO:
-   * - Add checks for leading and trailing slashes in the path etc. and add
-   * and / or remove them if necessary
-   * - Check if the given endpoint is a URL
-   */
-
   return fetch(endpoint + API_VERSION + apiMethod, {
     method: 'POST',
     headers: {
@@ -116,7 +109,7 @@ const upload = (
   content,
   token = _token
 ) => {
-  assert.string(path); // TODO: Check if this is a valid path with a leading forward slash / add the leading slash if it is missing
+  assert.string(path);
   assert.string(mode);
   assert.bool(autorename);
   assert.bool(mute);
