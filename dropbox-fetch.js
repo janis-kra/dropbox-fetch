@@ -94,7 +94,7 @@ const post = (
  * @param  {string} content the content  that should be written to the file
  * described in the apiArgs parameter
  * @param  {string?} token the OAuth 2 token that is used to access your app;
- * can be omitted (in this case, the token that is set via ``setToken` is used)
+ * can be omitted (in this case, the token that is set via `setToken` is used)
  * @return {function} a promise that resolves when the upload is complete or
  * fails with an error message
  */

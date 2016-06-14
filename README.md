@@ -39,4 +39,4 @@ Upcoming:
 
 ## Contributing
 
-Gotta implement a minimum set of operations first.
+You're welcome to contribute a feature to this repository. If you do, please make sure that it passes the linter (run `npm run lint`) and add a short unit test to *test/dropbox-fetch.js* (which should, obviously, pass - run the tests using `npm run test`).
