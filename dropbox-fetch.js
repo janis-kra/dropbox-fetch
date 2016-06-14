@@ -50,8 +50,7 @@ const setToken = (token) => {
  *
  * @param  {string} apiMethod the method to call
  * @param  {object} apiArgs an object that is passed as the Dropbox-API-Arg header
- * @param  {string} content the content to upload (e.g. the file content you
- * whish to upload)
+ * @param  {any} content the content to upload
  * @param  {string?} endpoint the URL endpoint to use; defaults to
  * https://content.dropboxapi.com as this is used for all file operations,
  * which are most frequently used when operating on a dropbox
@@ -69,7 +68,7 @@ const post = (
 ) => {
   assert.string(apiMethod, 'invalid argument ' + apiMethod + ' (expected: string)');
   assert.object(apiArgs, 'invalid argument ' + apiArgs + ' (expected: object)');
-  assert.string(content, 'invalid argument ' + content + ' (expected: string)');
+  // no assertion for content - can be anything
   assert.string(endpoint, 'invalid argument ' + endpoint + ' (expected: string)');
   assert.string(token, 'invalid argument ' + token + ' (expected: string)');
 
