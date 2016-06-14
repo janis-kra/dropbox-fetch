@@ -11,12 +11,6 @@ const API_VERSION = '2/';
 const AUTHORIZE_ENDPOINT = 'https://www.dropbox.com/oauth2/authorize';
 const CONTENT_UPLOAD_ENDPOINT = 'https://content.dropboxapi.com/';
 
-const getAuthorizationUrl = (clientId) => {
-  return AUTHORIZE_ENDPOINT + '?' +
-    'response_type=token' +
-    'client_id=' + clientId;
-};
-
 /**
  * Authorize via OAuth 2.0 for Dropbox API calls.
  *
@@ -28,8 +22,7 @@ const getAuthorizationUrl = (clientId) => {
  */
 const authorize = (clientId, redirectUri = '') => {
   return new Promise((resolve, reject) => {
-    reject('Not implemented yet, please obtain a token manually by calling ' +
-      getAuthorizationUrl(clientId));
+    reject('Not implemented yet, please obtain a token manually and store it via setToken');
   });
 };
 
@@ -47,27 +40,47 @@ const setToken = (token) => {
 };
 
 /**
- * Generic method for posting some content to a given endpoint using a certain
- * method. If no wrapper function for the method you need exists, feel free to use this
- * for your calls to the Dropbox API.
+ * Generic function for posting some content to a given endpoint using a certain
+ * API method. If no wrapper function for the method you need exists, feel free
+ * to use this for your calls to the Dropbox API.
  *
  * See https://www.dropbox.com/developers/documentation/http/documentation for
  * the documentation of the Dropbox HTTP API.
  *
- * @param  {string} method   the method to call
- * @param  {object} apiArgs  an object that is passed as the Dropbox-API-Arg header
- * @param  {string} content  the content to upload (e.g. the file content you
+ * @param  {string} apiMethod the method to call
+ * @param  {object} apiArgs an object that is passed as the Dropbox-API-Arg header
+ * @param  {string} content the content to upload (e.g. the file content you
  * whish to upload)
- * @param  {string} endpoint the URL endpoint to use; defaults to
- * https://content.dropboxapi.com as this is used for all file operations
+ * @param  {string?} endpoint the URL endpoint to use; defaults to
+ * https://content.dropboxapi.com as this is used for all file operations,
+ * which are most frequently used when operating on a dropbox
  * @param  {string?} token your Dropbox API token
  * (defaults to the value set via setToken`)
  * @return {function} a promise that, depending on if your call was successfull,
  * either resolves or rejects with the answer from the Dropbox HTTP Api
  */
-const post = (method, apiArgs, content, endpoint = CONTENT_UPLOAD_ENDPOINT, token = _token) => {
-  return new Promise((resolve, reject) => {
-    reject('Not implemented yet');
+const post = (apiMethod, apiArgs, content, endpoint = CONTENT_UPLOAD_ENDPOINT, token = _token) => {
+  assert.string(apiMethod, 'invalid argument ' + apiMethod + ' (expected: string)');
+  assert.object(apiArgs, 'invalid argument ' + apiArgs + ' (expected: object)');
+  assert.string(content, 'invalid argument ' + content + ' (expected: string)');
+  assert.string(endpoint, 'invalid argument ' + endpoint + ' (expected: string)');
+  assert.string(token, 'invalid argument ' + token + ' (expected: string)');
+
+  /*
+   * TODO:
+   * - Add checks for leading and trailing slashes in the path etc. and add
+   * and / or remove them if necessary
+   * - Check if the given endpoint is a URL
+   */
+
+  return fetch(endpoint + API_VERSION + apiMethod, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/octet-stream',
+      'Authorization': 'Bearer ' + token,
+      'Dropbox-API-Arg': JSON.stringify(apiArgs)
+    },
+    body: content
   });
 };
 

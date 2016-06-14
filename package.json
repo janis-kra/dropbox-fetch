@@ -30,6 +30,7 @@
     "tape": "^4.5.1"
   },
   "dependencies": {
+    "assert-plus": "^1.0.0",
     "node-fetch": "^1.5.3"
   }
 }
