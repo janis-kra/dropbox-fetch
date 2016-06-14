@@ -1,6 +1,10 @@
 # dropbox-fetch
 Simple Javascript wrapper for the Dropbox HTTP API, using fetch. This is mainly a personal project that I started because Dropbox does not provide a Javascript wrapper for their API, and most other projects that I found here on Github that do this are no longer maintained anymore or otherwise unsuitable for me.
 
+These functions that implement the Dropbox HTTP API all are pure functions (except for the network request that is being sent, of course). They return a promise which resolves with the complete result that the API returns.
+
+There is a convenience function `setToken` that allows you to set your token once and omit this in your subsequent function calls.
+
 ## Examples
 
 ### upload
