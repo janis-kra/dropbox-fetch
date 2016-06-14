@@ -87,7 +87,7 @@ const post = (
  * Upload the given file to the dropbox.
  * @param  {object} file an object describing the file, consisting of:
  *  - {string} path the path in the dropbox where the file should
- * be uploaded to (with a leading slash)
+ * be uploaded to, with a leading slash. Use forward slashes.
  *  - {string} mode what to do when the file already exists ('add', 'overwrite' or 'update')
  *  - {boolean} autorename
  *  - {boolean} mute
