@@ -13,10 +13,8 @@ const config = (() => {
   return c;
 })();
 
-test.onFinish(() => {
-});
-
-test('authorize', (t) => {
+// authorize currently not used --> skip test
+test('authorize', { skip: true }, (t) => {
   t.plan(6);
 
   box.authorize().then((result) => {
@@ -71,8 +69,8 @@ test('post:fail', (t) => {
   t.throws(box.post, null, 'calling post without any arguments should throw an Error');
 
   const failPost = (method, apiArgs, content, endpoint, token) => {
-    box.post(method, apiArgs, content, endpoint, token).then(() => {
-      t.fail('calling post with an invalid but correctly typed argument should result in a rejected promise');
+    box.post(method, apiArgs, content, endpoint, token).then((result) => {
+      t.ok((result.status === 400) || (result.status === 404), 'if post is called with an invalid but correctly typed argument and resolves, result.status should be 400 or 404');
     }).catch(() => {
       t.pass('calling post with an invalid argument failed as expected');
     });
@@ -89,11 +87,11 @@ test('post:fail', (t) => {
   const token = config.token;
   const endpoint = box.CONTENT_UPLOAD_ENDPOINT;
 
-  failPost('unknownMethod', apiArgs, content, token, endpoint);
-  failPost(method, {}, content, token, endpoint);
+  failPost('unknownMethod', apiArgs, content, endpoint, token);
+  failPost(method, {}, content, endpoint, token);
   // test for invalid content intentionally left out
-  failPost(method, apiArgs, content, 'invalidToken', endpoint);
-  failPost(method, apiArgs, content, token, 'unknownEndpoint');
+  failPost(method, apiArgs, content, endpoint, 'invalidToken');
+  failPost(method, apiArgs, content, 'unknownEndpoint', token);
 });
 
 test('post:upload', (t) => {
