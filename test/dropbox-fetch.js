@@ -66,6 +66,7 @@ test('setToken', (t) => {
 });
 
 test('post:fail', (t) => {
+  t.plan(5);
   t.throws(box.post, null, 'calling post without any arguments should throw an Error');
 
   const failPost = (method, apiArgs, content, endpoint, token) => {
@@ -95,6 +96,7 @@ test('post:fail', (t) => {
 });
 
 test('post:upload', (t) => {
+  t.plan(1);
   const method = '/files/upload';
   const apiArgs = {
     path: 'file.txt',
