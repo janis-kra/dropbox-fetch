@@ -1,3 +1,4 @@
+const assert = require('assert-plus');
 const fetch = require('node-fetch');
 
 /**
