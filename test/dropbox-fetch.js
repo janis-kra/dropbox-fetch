@@ -171,3 +171,22 @@ test('fetch', (t) => {
       t.ok(json, 'fetch post should return a json response');
     });
 });
+
+test('examples:upload', (t) => {
+  t.plan(1);
+  // test the examples that are published in the README.md
+  const apiArgs = {
+    path: '/foo/bar.txt' // this is were your file will be stored in your dropbox
+    // optional parameters are omitted (see JSDoc of the upload function)
+  };
+  const content = 'loremipsum1234!';
+  const token = config.token; // your personal access token
+
+  // upload the file to your dropbox
+  box.upload(apiArgs, content, token).then((result) => {
+    // do whatever you want with the response
+    t.equal(result.status, 200, 'uploading a valid file should return http status 200');
+  }).catch(() => {
+    t.fail('uploading a valid file should not fail');
+  });
+});

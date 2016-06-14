@@ -3,7 +3,26 @@ Simple Javascript wrapper for the Dropbox HTTP API, using fetch. This is mainly 
 
 ## Examples
 
-Coming soon.
+### upload
+
+```
+const box = require('dropbox-fetch');
+
+const apiArgs = {
+  path: '/foo/bar.txt' // this is were your file will be stored in your dropbox
+  // optional parameters are omitted (see JSDoc of the upload function)
+};
+const content = 'loremipsum1234!';
+const token = config.token; // your personal access token
+
+// upload the file to your dropbox
+box.upload(apiArgs, content, token).then((result) => {
+  // do whatever you want with the response
+  console.log(result.status); // 200
+}).catch((result) => {
+  console.log(result.status); // 400 or something similar
+});
+```
 
 ## Features / Upcoming
 
