@@ -13,6 +13,12 @@ const AUTHORIZE_ENDPOINT = 'https://www.dropbox.com/oauth2/authorize';
 const CONTENT_UPLOAD_ENDPOINT = 'https://content.dropboxapi.com/';
 
 /**
+ * Regex for testing the format of an apiMethod.
+ * @type {RegExp}
+ */
+const apiMethodRegex = /^([a-z_2]+\/)*[a-z_2]+$/;
+
+/**
  * Authorize via OAuth 2.0 for Dropbox API calls.
  *
  * @parameter {string} clientId your app's key
@@ -67,6 +73,7 @@ const post = (
   token = _token
 ) => {
   assert.string(apiMethod, 'invalid argument ' + apiMethod + ' (expected: string)');
+  assert.ok(apiMethodRegex.test(apiMethod), 'apiMethod has an unexpected format: ' + apiMethod);
   assert.object(apiArgs, 'invalid argument ' + apiArgs + ' (expected: object)');
   // no assertion for content - can be anything
   assert.string(endpoint, 'invalid argument ' + endpoint + ' (expected: string)');

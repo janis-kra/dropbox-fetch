@@ -65,7 +65,7 @@ test('setToken', (t) => {
   });
 });
 
-test('post:fail', (t) => {
+test('post:reject', (t) => {
   t.plan(5);
   t.throws(box.post, null, 'calling post without any arguments should throw an Error');
 
@@ -77,7 +77,7 @@ test('post:fail', (t) => {
     });
   };
 
-  const method = '/files/upload';
+  const method = 'files/upload';
   const apiArgs = {
     path: 'file.txt',
     mode: 'add',
@@ -88,7 +88,7 @@ test('post:fail', (t) => {
   const token = config.token;
   const endpoint = box.CONTENT_UPLOAD_ENDPOINT;
 
-  failPost('unknownMethod', apiArgs, content, endpoint, token);
+  failPost('unknownmethod', apiArgs, content, endpoint, token);
   failPost(method, {}, content, endpoint, token);
   // test for invalid content intentionally left out
   failPost(method, apiArgs, content, endpoint, 'invalidToken');
@@ -112,6 +112,21 @@ test('post:upload', (t) => {
     t.equal(result.status, 200, 'uploading a valid file via `post` should return http status 200');
   }).catch(() => {
     t.fail('uploading a valid file via `post` should not fail');
+  });
+});
+
+test('post:invalidApiMethod', (t) => {
+  t.plan(5);
+  const apiArgs = {};
+  const content = 'loremipsum1234';
+  const token = config.token;
+  const endpoint = box.CONTENT_UPLOAD_ENDPOINT;
+
+  const invalidApiMethods = ['-', '/', '/foo', 'foo//bar', 'foo/'];
+
+  invalidApiMethods.forEach((apiMethod) => {
+    t.throws(box.post.bind(this, apiMethod, apiArgs, content, endpoint, token),
+      null, 'calling post with an invalid apiMethod parameter should throw an error');
   });
 });
 
