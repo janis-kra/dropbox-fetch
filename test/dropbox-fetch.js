@@ -131,7 +131,7 @@ test('post:invalidApiMethod', (t) => {
 });
 
 test('upload', (t) => {
-  t.plan(9);
+  t.plan(10);
 
   const path = '/tape-test/upload.txt';
   const apiArgs = {
@@ -144,6 +144,7 @@ test('upload', (t) => {
   const validToken = config.token;
   const invalidToken = 1;
 
+  // valid params:
   box.upload(apiArgs, content, validToken).then((result) => {
     t.equal(result.status, 200, 'uploading a valid file should return http status 200');
   }).catch(() => {
@@ -151,12 +152,22 @@ test('upload', (t) => {
       '(make sure that the given path is writable in your dropbox and ' +
       'that the token parameter is correct)');
   });
+  // omit all optional params:
   box.upload({ path }, content, validToken).then((result) => {
     t.equal(result.status, 200, 'calling upload without the optional params ' +
       'should return status 200');
   }).catch(() => {
     t.fail('calling upload without the optional params should not fail ');
   });
+  // missing leading slash in the destination path:
+  apiArgs.path = 'foo/bar';
+  box.upload(apiArgs, content, validToken).then((result) => {
+    t.equal(result.status, 200, 'leading slash for the path should be inserted ' +
+      'automatically (expect http status 200)');
+  }).catch(() => {
+    t.fail('calling upload without the leading slash in the dest path should not fail');
+  });
+  apiArgs.path = path;
 
   // test with 5 invalid file objects:
   const invalidApiArgs = [

@@ -120,7 +120,17 @@ const upload = (
   assert.bool(autorename);
   assert.bool(mute);
 
-  return post('files/upload', { path, mode, autorename, mute }, content, CONTENT_UPLOAD_ENDPOINT, token);
+  if (!path.startsWith('/')) {
+    path = '/' + path;
+  }
+
+  return post(
+    'files/upload',
+    { path, mode, autorename, mute },
+    content,
+    CONTENT_UPLOAD_ENDPOINT,
+    token
+  );
 };
 
 module.exports = {
