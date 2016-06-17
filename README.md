@@ -8,7 +8,7 @@ There is a convenience function `setToken` that allows you to set your token onc
 ## Requirements
 
 You'll obviously need a Dropbox user account in order create a Dropbox app on their [*apps*](https://www.dropbox.com/developers/apps) page.
-While this application is in development (version < `1.x`), you'll need node.js version `6` to run it because I use wome fancy ES6 features.
+While this application is in development (version < `1.x`), you'll need node.js version `6` to run it because I use some fancy ES6 features.
 I will probably support the LTS version of node.js sometime in the future.
 
 ## Examples
