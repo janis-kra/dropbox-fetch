@@ -33,5 +33,8 @@
   "dependencies": {
     "assert-plus": "^1.0.0",
     "node-fetch": "^1.5.3"
+  },
+  "engines" : {
+    "node" : ">=6.0"
   }
 }
