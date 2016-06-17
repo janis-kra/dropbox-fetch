@@ -13,8 +13,18 @@ const config = (() => {
   return c;
 })();
 
+// set an attribute to true in order to skip that particular test
+const skip = {
+  authorize: true,
+  setToken: false,
+  post: false,
+  upload: false,
+  fetch: false,
+  examples: false
+};
+
 // authorize currently not used --> skip test
-test('authorize', { skip: true }, (t) => {
+test('authorize', { skip: skip.authorize }, (t) => {
   t.plan(6);
 
   box.authorize().then((result) => {
@@ -49,7 +59,7 @@ test('authorize', { skip: true }, (t) => {
   });
 });
 
-test('setToken', (t) => {
+test('setToken', { skip: skip.setToken }, (t) => {
   t.plan(6);
 
   t.doesNotThrow(box.setToken.bind(this, ''), null,
@@ -65,7 +75,7 @@ test('setToken', (t) => {
   });
 });
 
-test('post:reject', (t) => {
+test('post:reject', { skip: skip.post }, (t) => {
   t.plan(5);
   t.throws(box.post, null, 'calling post without any arguments should throw an Error');
 
@@ -95,7 +105,7 @@ test('post:reject', (t) => {
   failPost(method, apiArgs, content, 'unknownEndpoint', token);
 });
 
-test('post:upload', (t) => {
+test('post:upload', { skip: skip.post }, (t) => {
   t.plan(1);
   const method = 'files/upload';
   const apiArgs = {
@@ -115,7 +125,7 @@ test('post:upload', (t) => {
   });
 });
 
-test('post:invalidApiMethod', (t) => {
+test('post:invalidApiMethod', { skip: skip.post }, (t) => {
   t.plan(5);
   const apiArgs = {};
   const content = 'loremipsum1234';
@@ -130,7 +140,7 @@ test('post:invalidApiMethod', (t) => {
   });
 });
 
-test('upload', (t) => {
+test('upload', { skip: skip.upload }, (t) => {
   t.plan(10);
 
   const path = '/tape-test/upload.txt';
@@ -187,7 +197,7 @@ test('upload', (t) => {
     'uploading with an invalid token type should fail');
 });
 
-test('fetch', (t) => {
+test('fetch', { skip: skip.fetch }, (t) => {
   t.plan(1);
 
   fetch('http://httpbin.org/post', { method: 'POST', body: 'a=1' })
@@ -198,7 +208,7 @@ test('fetch', (t) => {
     });
 });
 
-test('examples:upload', (t) => {
+test('examples:upload', { skip: skip.examples }, (t) => {
   t.plan(1);
   // test the examples that are published in the README.md
   const apiArgs = {
