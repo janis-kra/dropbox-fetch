@@ -1,6 +1,6 @@
 {
   "name": "dropbox-fetch",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Simple Javascript wrapper for the Dropbox HTTP API, using fetch.",
   "main": "dropbox-fetch.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "assert-plus": "^1.0.0",
     "node-fetch": "^1.5.3"
   },
-  "engines" : {
-    "node" : ">=6.0"
+  "engines": {
+    "node": ">=6.0"
   }
 }
