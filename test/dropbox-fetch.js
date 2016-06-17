@@ -19,6 +19,7 @@ const skip = {
   setToken: false,
   post: false,
   upload: false,
+  download: false,
   fetch: false,
   examples: false
 };
@@ -195,6 +196,42 @@ test('upload', { skip: skip.upload }, (t) => {
 
   t.throws(box.upload.bind(this, apiArgs, content, invalidToken),
     'uploading with an invalid token type should fail');
+});
+
+test('download:fail', { skip: skip.download }, (t) => {
+  t.plan(3);
+
+  t.throws(box.download, null,
+    'attempting a download without specifying a path should result in an Error');
+
+  t.throws(box.upload.bind(this, true), null, 'attempting a download with a ' +
+    'boolean value as the path should result in an Error');
+
+  t.throws(box.upload.bind(this, 1), null, 'attempting a download with a ' +
+    'number value as the path should result in an Error');
+});
+
+test('download:success', { skip: skip.download }, (t) => {
+  t.plan(3);
+
+  const path = '/tape-test/upload.txt';
+  const apiArgs = {
+    path: path,
+    mode: 'add',
+    autorename: true,
+    mute: false
+  };
+  const content = 'loremipsum1234!';
+  const token = config.token;
+
+  box.upload(apiArgs, content, token).then((result) => {
+    if (result.status === 200) {
+      box.download(path, token).then((result) => {
+        t.equal(result.path_lower, path, 'the path of the downloaded file ' +
+          'should match the path of the uploaded file');
+      });
+    }
+  });
 });
 
 test('fetch', { skip: skip.fetch }, (t) => {

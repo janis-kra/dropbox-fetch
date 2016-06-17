@@ -134,11 +134,26 @@ const upload = (
   );
 };
 
+/**
+ * Download the file specified by a path from the user's Dropbox.
+ * @param {string} path the path of the file to download
+ * @param {string?} token the OAuth 2 token that is used to access your app;
+ * can be omitted (in this case, the token that is set via `setToken` is used)
+ * @return {function} a promise that resolves when the upload is complete or
+ * fails with an error message
+ */
+const download = (path, token = _token) => {
+  return new Promise((resolve, reject) => {
+    reject('Not implemented yet');
+  });
+};
+
 module.exports = {
   AUTHORIZE_ENDPOINT,
   CONTENT_UPLOAD_ENDPOINT,
   authorize,
   setToken,
   post,
-  upload
+  upload,
+  download
 };
