@@ -1,6 +1,6 @@
 {
   "name": "dropbox-fetch",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Simple Javascript wrapper for the Dropbox HTTP API, using fetch.",
   "main": "dropbox-fetch.js",
   "scripts": {
