@@ -11,7 +11,7 @@ let _token = '';
 const API_VERSION = '2/';
 
 const AUTHORIZE_ENDPOINT = 'https://www.dropbox.com/oauth2/authorize';
-const CONTENT_UPLOAD_ENDPOINT = 'https://content.dropboxapi.com/';
+const CONTENT_ENDPOINT = 'https://content.dropboxapi.com/';
 
 /**
  * Regex for testing the format of an apiMethod.
@@ -70,7 +70,7 @@ const post = (
   apiMethod,
   apiArgs,
   content,
-  endpoint = CONTENT_UPLOAD_ENDPOINT,
+  endpoint = CONTENT_ENDPOINT,
   token = _token
 ) => {
   assert.string(apiMethod, 'invalid argument ' + apiMethod + ' (expected: string)');
@@ -129,7 +129,7 @@ const upload = (
     'files/upload',
     { path, mode, autorename, mute },
     content,
-    CONTENT_UPLOAD_ENDPOINT,
+    CONTENT_ENDPOINT,
     token
   );
 };
@@ -150,7 +150,7 @@ const download = (path, token = _token) => {
 
 module.exports = {
   AUTHORIZE_ENDPOINT,
-  CONTENT_UPLOAD_ENDPOINT,
+  CONTENT_ENDPOINT,
   authorize,
   setToken,
   post,
