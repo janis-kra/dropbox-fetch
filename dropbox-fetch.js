@@ -143,8 +143,15 @@ const upload = (
  * fails with an error message
  */
 const download = (path, token = _token) => {
-  return new Promise((resolve, reject) => {
-    reject('Not implemented yet');
+  assert.string(path, 'invalid argument ' + path + ' (expected: string)');
+  assert.string(token, 'invalid argument ' + token + ' (expected: string)');
+
+  return fetch(CONTENT_ENDPOINT + API_VERSION + 'files/download', {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Dropbox-API-Arg': JSON.stringify({ path })
+    }
   });
 };
 

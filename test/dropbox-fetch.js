@@ -212,7 +212,7 @@ test('download:fail', { skip: skip.download }, (t) => {
 });
 
 test('download:success', { skip: skip.download }, (t) => {
-  t.plan(3);
+  t.plan(2);
 
   const path = '/tape-test/upload.txt';
   const apiArgs = {
@@ -227,8 +227,13 @@ test('download:success', { skip: skip.download }, (t) => {
   box.upload(apiArgs, content, token).then((result) => {
     if (result.status === 200) {
       box.download(path, token).then((result) => {
-        t.equal(result.path_lower, path, 'the path of the downloaded file ' +
-          'should match the path of the uploaded file');
+        const fileContentAsPromise = result.text();
+        t.ok(fileContentAsPromise instanceof Promise,
+          'result.text() should return a promise');
+        return fileContentAsPromise;
+      }).then((fileContent) => {
+        t.equal(fileContent, content, 'the content of the downloaded file ' +
+          'should match the content of the uploaded file');
       });
     }
   });
