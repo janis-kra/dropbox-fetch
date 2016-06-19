@@ -52,11 +52,11 @@ box.download(path, token).then((result) => {
 Features:
 
 - `upload`
+- `download`
 
 Upcoming:
 
 - `authorize`
-- `download`
 - `listFiles`
 
 
