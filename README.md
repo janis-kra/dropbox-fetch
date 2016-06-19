@@ -34,6 +34,19 @@ box.upload(apiArgs, content, token).then((result) => {
 });
 ```
 
+### download
+
+``` js
+const path = '/foo/bar.txt'; // whatever file you wish to download
+const token = config.token; // your personal access token
+
+box.download(path, token).then((result) => {
+  return result.text(); // promise that resolves with the file's content as a string
+}).then((fileContent) => {
+  // do whatever you want with the file's contents, e.g. write to a file or just log
+  console.log(fileContent);
+});
+```
 ## Features / Upcoming
 
 Features:
