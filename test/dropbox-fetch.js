@@ -20,6 +20,7 @@ const skip = {
   post: false,
   upload: false,
   download: false,
+  get: false,
   fetch: false,
   examples: false
 };
@@ -236,6 +237,38 @@ test('download:success', { skip: skip.download }, (t) => {
           'should match the content of the uploaded file');
       });
     }
+  });
+});
+
+test('get:download', { skip: skip.get }, (t) => {
+  // reproduce the download function
+  t.plan(1);
+  const method = 'files/download';
+  const apiArgs = {
+    path: '/abcd/efgh/ijkl/mnop/qrst/uvwx/y.z' // this file is expected not to exist!
+  };
+  const token = config.token;
+  const endpoint = box.CONTENT_UPLOAD_ENDPOINT;
+
+  box.get(method, apiArgs, endpoint, token).then((result) => {
+    t.equal(result.status, 200, 'downloading using `get` should return http status 200');
+  }).catch(() => {
+    t.fail('downloading any file (existing or not) via `get` should not ' +
+      'result in a rejected promise');
+  });
+});
+
+test('get:invalidApiMethod', { skip: skip.get }, (t) => {
+  t.plan(5);
+  const apiArgs = {};
+  const token = config.token;
+  const endpoint = box.CONTENT_UPLOAD_ENDPOINT;
+
+  const invalidApiMethods = ['-', '/', '/foo', 'foo//bar', 'foo/'];
+
+  invalidApiMethods.forEach((apiMethod) => {
+    t.throws(box.get.bind(this, apiMethod, apiArgs, endpoint, token),
+      null, 'calling get with an invalid apiMethod parameter should throw an error');
   });
 });
 

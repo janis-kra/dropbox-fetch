@@ -48,9 +48,41 @@ const setToken = (token) => {
 };
 
 /**
+* Generic function for loading content from the Dropbox given an endpoint-method
+* combination. If no wrapper function for the method you need exists, feel free
+ * to use this for your GET calls to the Dropbox API.
+ *
+ * See https://www.dropbox.com/developers/documentation/http/documentation for
+ * the documentation of the Dropbox HTTP API.
+ *
+ * @param  {string} apiMethod the method to call
+ * @param  {object} apiArgs an object that is passed as the Dropbox-API-Arg header
+ * @param  {string?} endpoint the URL endpoint to use; defaults to
+ * https://content.dropboxapi.com as this is used for all file operations,
+ * which are most frequently used when operating on a dropbox
+ * @param  {string?} token your Dropbox API token
+ * (defaults to the value set via setToken`)
+ * @return {function} a promise that, depending on if your call was successfull,
+ * either resolves or rejects with the answer from the Dropbox HTTP Api. You
+ * probably want to access some data that is returned by the call; this can be
+ * achieved by calling `text()` on the result returned by the promise.
+ */
+const get = (
+  apiMethod,
+  apiArgs,
+  content,
+  endpoint = CONTENT_ENDPOINT,
+  token = _token
+) => {
+  return new Promise((resolve, reject) => {
+    reject('Not implemented yet');
+  });
+};
+
+/**
  * Generic function for posting some content to a given endpoint using a certain
  * API method. If no wrapper function for the method you need exists, feel free
- * to use this for your calls to the Dropbox API.
+ * to use this for your POST calls to the Dropbox API.
  *
  * See https://www.dropbox.com/developers/documentation/http/documentation for
  * the documentation of the Dropbox HTTP API.
@@ -159,8 +191,9 @@ module.exports = {
   AUTHORIZE_ENDPOINT,
   CONTENT_ENDPOINT,
   authorize,
-  setToken,
+  download,
+  get,
   post,
-  upload,
-  download
+  setToken,
+  upload
 };
