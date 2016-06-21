@@ -12,6 +12,7 @@ const API_VERSION = '2/';
 
 const AUTHORIZE_ENDPOINT = 'https://www.dropbox.com/oauth2/authorize';
 const CONTENT_ENDPOINT = 'https://content.dropboxapi.com/';
+const RPC_ENDPOINT = 'https://api.dropboxapi.com/';
 
 /**
  * Regex for testing the format of an apiMethod.
@@ -187,12 +188,46 @@ const download = (path, token = _token) => {
   });
 };
 
+/**
+ * Get the metadata of the specified file. Useful for testing whether a file
+ * exists or how big the download would be.
+ * @param  {string} path the path of the file. Can also be an id (prepend the
+ * id with 'id:') or a revision (prepend with 'rev:').
+ * @param  {boolean=false} includeMediaInfo obtain additional info for photos or
+ * videos
+ * @param  {boolean=false} includeDeleted get metadata even if the file was
+ * deleted
+ * @param  {boolean=false} includeHasExplicitSharedMemebers include a flag that
+ * indicates whether a file has any explicitly shared members
+ * @return {function} a promise that resolves when the metadata is received or
+ * fails with an error message
+ * The output can be obtained by calling text() on the returned promise.
+ */
+const getMetadata = (
+  path,
+  includeMediaInfo = false,
+  includeDeleted = false,
+  includeHasExplicitSharedMemebers = false
+) => {
+  /*
+  curl -X POST https://api.dropboxapi.com/2/files/get_metadata \
+      --header "Authorization: Bearer I4I--sB9L9AAAAAAAAAAD2eK4wqs2ExUdcCgOlPuBds4wJTFkBpP4QRyudsuR_eh" \
+      --header "Content-Type: application/json" \
+      --data "{\"path\": \"/Homework/math\",\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false}"
+   */
+  return new Promise((resolve, reject) => {
+    reject('Not implemented yet');
+  });
+};
+
 module.exports = {
   AUTHORIZE_ENDPOINT,
   CONTENT_ENDPOINT,
+  RPC_ENDPOINT,
   authorize,
   download,
   get,
+  getMetadata,
   post,
   setToken,
   upload

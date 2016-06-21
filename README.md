@@ -58,6 +58,7 @@ Upcoming:
 
 - `authorize`
 - `listFiles`
+- `getMetadata`
 
 
 ## Contributing
