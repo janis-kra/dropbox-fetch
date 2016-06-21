@@ -16,14 +16,14 @@ const config = (() => {
 // set an attribute to true in order to skip that particular test
 const skip = {
   authorize: true,
-  setToken: true,
-  post: true,
-  upload: true,
-  download: true,
-  get: true,
+  setToken: false,
+  post: false,
+  upload: false,
+  download: false,
+  get: false,
   getMetadata: false,
-  fetch: true,
-  examples: true
+  fetch: false,
+  examples: false
 };
 
 // authorize currently not used --> skip test
@@ -252,7 +252,7 @@ test('get:download', { skip: skip.get }, (t) => {
   const endpoint = box.CONTENT_UPLOAD_ENDPOINT;
 
   box.get(method, apiArgs, endpoint, token).then((result) => {
-    t.equal(result.status, 200, 'downloading using `get` should return http status 200');
+    t.equal(result.status, 409, 'downloading a non-existing file using `get` should return http status 409 ("not_found")');
   }).catch(() => {
     t.fail('downloading any file (existing or not) via `get` should not ' +
       'result in a rejected promise');
