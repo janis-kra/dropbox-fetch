@@ -274,29 +274,9 @@ test('get:invalidApiMethod', { skip: skip.get }, (t) => {
 });
 
 test('getMetadata:fail', { skip: skip.getMetadata }, (t) => {
-  /*
-
-  {
-   ".tag": "file",
-   "name": "Prime_Numbers.txt",
-   "id": "id:a4ayc_80_OEAAAAAAAAAXw",
-   "client_modified": "2015-05-12T15:50:38Z",
-   "server_modified": "2015-05-12T15:50:38Z",
-   "rev": "a1c10ce0dd78",
-   "size": 7212,
-   "path_lower": "/homework/math/prime_numbers.txt",
-   "path_display": "/Homework/math/Prime_Numbers.txt",
-   "sharing_info": {
-     "read_only": true,
-     "parent_shared_folder_id": "84528192421",
-     "modified_by": "dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc"
-   },
-   "has_explicit_shared_members": false
-  }
-   */
   // call the getMetadata function with invalid args
-  t.plan(5);
-  const validPath = '/tape-test/getMetadata:fail'; // not neccessarily existing
+  t.plan(6);
+  const validPath = '/tape-test/getMetadata-fail'; // not neccessarily existing
   const invalidPath = 1;
 
   t.throws(box.getMetadata, null,
@@ -311,25 +291,31 @@ test('getMetadata:fail', { skip: skip.getMetadata }, (t) => {
       'calling getMetadata with an invalid type for includeDeleted should fail');
   t.throws(box.getMetadata.bind(this, validPath, true, true, 1), null,
       'calling getMetadata with an invalid type for includeHasExplicitSharedMembers should fail');
+  t.throws(box.getMetadata.bind(this, validPath, true, true, true, 1), null,
+      'calling getMetadata with an invalid type for token should fail');
 });
 
 test('getMetadata:success', { skip: skip.getMetadata }, (t) => {
   t.plan(1);
 
-  const validPath = '/tape-test/getMetadata:success'; // not neccessarily existing
+  const filename = 'getMetadata-success';
+  const validPath = '/tape-test/' + filename; // not neccessarily existing
+  const token = config.token;
 
-  box.getMetadata(validPath, true, true, true)
-    .then((result) => result.json())
-    .then((json) => {
-      const data = JSON.parse(json);
-      t.ok(data.error_summary === 'path/not_found/...' ||
-          data.name === 'getMetadata:success',
-        'depending on whether the file exists in the testing dropbox, ' +
-        'getMetadata should either return a path-not-found error or the metadata' +
-        'of the specified file');
-    }).catch(() => {
-      t.fail('getMetadata should not fail when called with valid arguments');
-    });
+  box.getMetadata(validPath, true, true, true, token).then((result) => {
+    return result.json();
+  }).then((data) => {
+    t.ok(
+      (typeof data.error_summary === 'string' &&
+        data.error_summary.startsWith('path/not_found/')
+      ) ||
+        (typeof data.name === 'string' && data.name === filename),
+      'depending on whether the file exists in the testing dropbox, ' +
+      'getMetadata should either return a path-not-found error or the metadata' +
+      'of the specified file');
+  }).catch(() => {
+    t.fail('getMetadata should not fail when called with valid arguments');
+  });
 });
 
 test('fetch', { skip: skip.fetch }, (t) => {

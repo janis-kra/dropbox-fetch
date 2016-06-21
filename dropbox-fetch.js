@@ -71,12 +71,21 @@ const setToken = (token) => {
 const get = (
   apiMethod,
   apiArgs,
-  content,
   endpoint = CONTENT_ENDPOINT,
   token = _token
 ) => {
-  return new Promise((resolve, reject) => {
-    reject('Not implemented yet');
+  assert.string(apiMethod, 'invalid argument ' + apiMethod + ' (expected: string)');
+  assert.ok(apiMethodRegex.test(apiMethod), 'apiMethod has an unexpected format: ' + apiMethod);
+  assert.object(apiArgs, 'invalid argument ' + apiArgs + ' (expected: object)');
+  assert.string(endpoint, 'invalid argument ' + endpoint + ' (expected: string)');
+  assert.string(token, 'invalid argument ' + token + ' (expected: string)');
+
+  return fetch(endpoint + API_VERSION + apiMethod, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Dropbox-API-Arg': JSON.stringify(apiArgs)
+    }
   });
 };
 
@@ -179,13 +188,7 @@ const download = (path, token = _token) => {
   assert.string(path, 'invalid argument ' + path + ' (expected: string)');
   assert.string(token, 'invalid argument ' + token + ' (expected: string)');
 
-  return fetch(CONTENT_ENDPOINT + API_VERSION + 'files/download', {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + token,
-      'Dropbox-API-Arg': JSON.stringify({ path })
-    }
-  });
+  return get('files/download', { path }, CONTENT_ENDPOINT, token);
 };
 
 /**
@@ -199,6 +202,8 @@ const download = (path, token = _token) => {
  * deleted
  * @param  {boolean=false} includeHasExplicitSharedMembers include a flag that
  * indicates whether a file has any explicitly shared members
+ * @param  {string=} token the OAuth 2 token that is used to access your app;
+ * can be omitted (in this case, the token that is set via `setToken` is used)
  * @return {function} a promise that resolves when the metadata is received or
  * fails with an error message
  * The output can be obtained by calling text() on the returned promise.
@@ -207,16 +212,27 @@ const getMetadata = (
   path,
   includeMediaInfo = false,
   includeDeleted = false,
-  includeHasExplicitSharedMembers = false
+  includeHasExplicitSharedMembers = false,
+  token = _token
 ) => {
-  /*
-  curl -X POST https://api.dropboxapi.com/2/files/get_metadata \
-      --header "Authorization: Bearer I4I--sB9L9AAAAAAAAAAD2eK4wqs2ExUdcCgOlPuBds4wJTFkBpP4QRyudsuR_eh" \
-      --header "Content-Type: application/json" \
-      --data "{\"path\": \"/Homework/matasdfasdfh\",\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false}"
-   */
-  return new Promise((resolve, reject) => {
-    reject('Not implemented yet');
+  assert.string(path);
+  assert.bool(includeMediaInfo);
+  assert.bool(includeDeleted);
+  assert.bool(includeHasExplicitSharedMembers);
+  assert.string(token);
+
+  return fetch(RPC_ENDPOINT + API_VERSION + 'files/get_metadata', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      path,
+      'include_media_info': includeMediaInfo,
+      'include_deleted': includeDeleted,
+      'include_has_explicit_shared_members': includeHasExplicitSharedMembers
+    })
   });
 };
 
