@@ -47,18 +47,34 @@ box.download(path, token).then((result) => {
   console.log(fileContent);
 });
 ```
+
+### getMetadata
+
+``` js
+
+const validPath = '/tape-test/' + filename; // not neccessarily existing
+const token = config.token; // your personal access token
+
+box.getMetadata(validPath, true, true, true, token).then((result) => {
+  if (result.status === 200) {
+    // obtain the files metadata via result.json() (returns a promise)
+    console.log('success');
+  }
+});
+```
+
 ## Features / Upcoming
 
 Features:
 
 - `upload`
 - `download`
+- `getMetadata`
 
 Upcoming:
 
 - `authorize`
 - `listFiles`
-- `getMetadata`
 
 
 ## Contributing
