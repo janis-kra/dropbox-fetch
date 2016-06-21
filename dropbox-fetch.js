@@ -197,7 +197,7 @@ const download = (path, token = _token) => {
  * videos
  * @param  {boolean=false} includeDeleted get metadata even if the file was
  * deleted
- * @param  {boolean=false} includeHasExplicitSharedMemebers include a flag that
+ * @param  {boolean=false} includeHasExplicitSharedMembers include a flag that
  * indicates whether a file has any explicitly shared members
  * @return {function} a promise that resolves when the metadata is received or
  * fails with an error message
@@ -207,13 +207,13 @@ const getMetadata = (
   path,
   includeMediaInfo = false,
   includeDeleted = false,
-  includeHasExplicitSharedMemebers = false
+  includeHasExplicitSharedMembers = false
 ) => {
   /*
   curl -X POST https://api.dropboxapi.com/2/files/get_metadata \
       --header "Authorization: Bearer I4I--sB9L9AAAAAAAAAAD2eK4wqs2ExUdcCgOlPuBds4wJTFkBpP4QRyudsuR_eh" \
       --header "Content-Type: application/json" \
-      --data "{\"path\": \"/Homework/math\",\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false}"
+      --data "{\"path\": \"/Homework/matasdfasdfh\",\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false}"
    */
   return new Promise((resolve, reject) => {
     reject('Not implemented yet');

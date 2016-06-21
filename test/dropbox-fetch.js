@@ -16,13 +16,14 @@ const config = (() => {
 // set an attribute to true in order to skip that particular test
 const skip = {
   authorize: true,
-  setToken: false,
-  post: false,
-  upload: false,
-  download: false,
-  get: false,
-  fetch: false,
-  examples: false
+  setToken: true,
+  post: true,
+  upload: true,
+  download: true,
+  get: true,
+  getMetadata: false,
+  fetch: true,
+  examples: true
 };
 
 // authorize currently not used --> skip test
@@ -270,6 +271,65 @@ test('get:invalidApiMethod', { skip: skip.get }, (t) => {
     t.throws(box.get.bind(this, apiMethod, apiArgs, endpoint, token),
       null, 'calling get with an invalid apiMethod parameter should throw an error');
   });
+});
+
+test('getMetadata:fail', { skip: skip.getMetadata }, (t) => {
+  /*
+
+  {
+   ".tag": "file",
+   "name": "Prime_Numbers.txt",
+   "id": "id:a4ayc_80_OEAAAAAAAAAXw",
+   "client_modified": "2015-05-12T15:50:38Z",
+   "server_modified": "2015-05-12T15:50:38Z",
+   "rev": "a1c10ce0dd78",
+   "size": 7212,
+   "path_lower": "/homework/math/prime_numbers.txt",
+   "path_display": "/Homework/math/Prime_Numbers.txt",
+   "sharing_info": {
+     "read_only": true,
+     "parent_shared_folder_id": "84528192421",
+     "modified_by": "dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc"
+   },
+   "has_explicit_shared_members": false
+  }
+   */
+  // call the getMetadata function with invalid args
+  t.plan(5);
+  const validPath = '/tape-test/getMetadata:fail'; // not neccessarily existing
+  const invalidPath = 1;
+
+  t.throws(box.getMetadata, null,
+      'calling getMetadata without arguments should fail');
+
+  t.throws(box.getMetadata.bind(this, invalidPath), null,
+      'calling getMetadata with an invalid type for the path should fail');
+
+  t.throws(box.getMetadata.bind(this, validPath, 1), null,
+      'calling getMetadata with an invalid type for includeMediaInfo should fail');
+  t.throws(box.getMetadata.bind(this, validPath, true, 1), null,
+      'calling getMetadata with an invalid type for includeDeleted should fail');
+  t.throws(box.getMetadata.bind(this, validPath, true, true, 1), null,
+      'calling getMetadata with an invalid type for includeHasExplicitSharedMembers should fail');
+});
+
+test('getMetadata:success', { skip: skip.getMetadata }, (t) => {
+  t.plan(1);
+
+  const validPath = '/tape-test/getMetadata:success'; // not neccessarily existing
+
+  box.getMetadata(validPath, true, true, true)
+    .then((result) => result.json())
+    .then((json) => {
+      const data = JSON.parse(json);
+      t.ok(data.error_summary === 'path/not_found/...' ||
+          data.name === 'getMetadata:success',
+        'depending on whether the file exists in the testing dropbox, ' +
+        'getMetadata should either return a path-not-found error or the metadata' +
+        'of the specified file');
+    }).catch(() => {
+      t.fail('getMetadata should not fail when called with valid arguments');
+    });
 });
 
 test('fetch', { skip: skip.fetch }, (t) => {
