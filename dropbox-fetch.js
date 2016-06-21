@@ -90,10 +90,10 @@ const get = (
  * @param  {string} apiMethod the method to call
  * @param  {object} apiArgs an object that is passed as the Dropbox-API-Arg header
  * @param  {any} content the content to upload
- * @param  {string?} endpoint the URL endpoint to use; defaults to
+ * @param  {string=} endpoint the URL endpoint to use; defaults to
  * https://content.dropboxapi.com as this is used for all file operations,
  * which are most frequently used when operating on a dropbox
- * @param  {string?} token your Dropbox API token
+ * @param  {string=} token your Dropbox API token
  * (defaults to the value set via setToken`)
  * @return {function} a promise that, depending on if your call was successfull,
  * either resolves or rejects with the answer from the Dropbox HTTP Api
@@ -133,7 +133,7 @@ const post = (
  *  - {boolean} mute
  * @param  {string} content the content  that should be written to the file
  * described in the apiArgs parameter
- * @param  {string?} token the OAuth 2 token that is used to access your app;
+ * @param  {string=} token the OAuth 2 token that is used to access your app;
  * can be omitted (in this case, the token that is set via `setToken` is used)
  * @return {function} a promise that resolves when the upload is complete or
  * fails with an error message
@@ -169,7 +169,7 @@ const upload = (
 /**
  * Download the file specified by a path from the user's Dropbox.
  * @param {string} path the path of the file to download
- * @param {string?} token the OAuth 2 token that is used to access your app;
+ * @param {string=} token the OAuth 2 token that is used to access your app;
  * can be omitted (in this case, the token that is set via `setToken` is used)
  * @return {function} a promise that resolves when the upload is complete or
  * fails with an error message
