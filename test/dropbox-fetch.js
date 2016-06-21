@@ -303,16 +303,9 @@ test('getMetadata:success', { skip: skip.getMetadata }, (t) => {
   const token = config.token;
 
   box.getMetadata(validPath, true, true, true, token).then((result) => {
-    return result.json();
-  }).then((data) => {
-    t.ok(
-      (typeof data.error_summary === 'string' &&
-        data.error_summary.startsWith('path/not_found/')
-      ) ||
-        (typeof data.name === 'string' && data.name === filename),
+    t.equal(result.status, 200 || 409,
       'depending on whether the file exists in the testing dropbox, ' +
-      'getMetadata should either return a path-not-found error or the metadata' +
-      'of the specified file');
+      'HTTP status 200 or 409 ("not_found") are expected');
   }).catch(() => {
     t.fail('getMetadata should not fail when called with valid arguments');
   });
