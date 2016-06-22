@@ -33,9 +33,10 @@ const token = config.token; // your personal access token
 // upload the file to your dropbox
 box.upload(apiArgs, content, token).then((result) => {
   // do whatever you want with the response
-  console.log(result.status); // 200
+  console.log(result.status); // 200 (hopefully)
+  // result.status could also be 400 or 500, these also result in a resolved promise
 }).catch((result) => {
-  console.log(result.status); // 400 or something similar
+  console.err('something went wrong'); 
 });
 ```
 
