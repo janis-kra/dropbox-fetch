@@ -1,9 +1,3 @@
 module.exports = {
-    "extends": "standard",
-    "plugins": [
-        "standard"
-    ],
-    "rules": {
-        semi: ["error", "always"]
-    }
+    "extends": "eslint-config-janiskra/base"
 };
