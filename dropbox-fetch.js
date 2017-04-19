@@ -1,4 +1,3 @@
-'use strict';
 const assert = require('assert-plus');
 const fetch = require('node-fetch');
 
@@ -6,7 +5,7 @@ const fetch = require('node-fetch');
  * The authorization token with which calls to the API are made.
  * @type {String}
  */
-let _token = '';
+let authToken = '';
 
 const API_VERSION = '2/';
 
@@ -29,6 +28,7 @@ const apiMethodRegex = /^([a-z_2]+\/)*[a-z_2]+$/;
  * @return {function} a promise that resolves or fails both with the returned
  * HTTP status code
  */
+// eslint-disable-next-line
 const authorize = (clientId, redirectUri = '') => {
   return new Promise((resolve, reject) => {
     reject('Not implemented yet, please obtain a token manually and store it via setToken');
@@ -45,7 +45,7 @@ const setToken = (token) => {
   if (typeof token !== 'string') {
     throw new Error('invalid argument ' + token + ' (expected: string)');
   }
-  _token = token;
+  authToken = token;
 };
 
 /**
@@ -72,7 +72,7 @@ const get = (
   apiMethod,
   apiArgs,
   endpoint = CONTENT_ENDPOINT,
-  token = _token
+  token = authToken
 ) => {
   assert.string(apiMethod, 'invalid argument ' + apiMethod + ' (expected: string)');
   assert.ok(apiMethodRegex.test(apiMethod), 'apiMethod has an unexpected format: ' + apiMethod);
@@ -83,7 +83,7 @@ const get = (
   return fetch(endpoint + API_VERSION + apiMethod, {
     method: 'GET',
     headers: {
-      'Authorization': 'Bearer ' + token,
+      Authorization: 'Bearer ' + token,
       'Dropbox-API-Arg': JSON.stringify(apiArgs)
     }
   });
@@ -113,7 +113,7 @@ const post = (
   apiArgs,
   content,
   endpoint = CONTENT_ENDPOINT,
-  token = _token
+  token = authToken
 ) => {
   assert.string(apiMethod, 'invalid argument ' + apiMethod + ' (expected: string)');
   assert.ok(apiMethodRegex.test(apiMethod), 'apiMethod has an unexpected format: ' + apiMethod);
@@ -126,7 +126,7 @@ const post = (
     method: 'POST',
     headers: {
       'Content-Type': 'application/octet-stream',
-      'Authorization': 'Bearer ' + token,
+      Authorization: 'Bearer ' + token,
       'Dropbox-API-Arg': JSON.stringify(apiArgs)
     },
     body: content
@@ -156,20 +156,21 @@ const upload = (
     mute = false
   },
   content,
-  token = _token
+  token = authToken
 ) => {
   assert.string(path);
   assert.string(mode);
   assert.bool(autorename);
   assert.bool(mute);
 
+  let p = path;
   if (!path.startsWith('/')) {
-    path = '/' + path;
+    p = '/' + path;
   }
 
   return post(
     'files/upload',
-    { path, mode, autorename, mute },
+    { p, mode, autorename, mute },
     content,
     CONTENT_ENDPOINT,
     token
@@ -184,7 +185,7 @@ const upload = (
  * @return {function} a promise that resolves when the upload is complete or
  * fails with an error message
  */
-const download = (path, token = _token) => {
+const download = (path, token = authToken) => {
   assert.string(path, 'invalid argument ' + path + ' (expected: string)');
   assert.string(token, 'invalid argument ' + token + ' (expected: string)');
 
@@ -213,7 +214,7 @@ const getMetadata = (
   includeMediaInfo = false,
   includeDeleted = false,
   includeHasExplicitSharedMembers = false,
-  token = _token
+  token = authToken
 ) => {
   assert.string(path);
   assert.bool(includeMediaInfo);
@@ -224,14 +225,14 @@ const getMetadata = (
   return fetch(RPC_ENDPOINT + API_VERSION + 'files/get_metadata', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer ' + token,
+      Authorization: 'Bearer ' + token,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      path,
-      'include_media_info': includeMediaInfo,
-      'include_deleted': includeDeleted,
-      'include_has_explicit_shared_members': includeHasExplicitSharedMembers
+      path: path,
+      include_media_info: includeMediaInfo,
+      include_deleted: includeDeleted,
+      include_has_explicit_shared_members: includeHasExplicitSharedMembers
     })
   });
 };
